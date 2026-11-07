@@ -1,5 +1,5 @@
-// v0.1.0. Engineering starting points, deliberately separate from cell ratings.
-export const VERSION = '0.1.0';
+// v0.1.1. Engineering starting points, deliberately separate from cell ratings.
+export const VERSION = '0.1.1';
 export const CELL = Object.freeze({ capacity: 314, nominal: 3.2 });
 // These are operating profiles, NOT an OCV/SOC curve or a manufacturer SOC table.
 const upperProfiles = [[60,3.36],[65,3.37],[70,3.38],[75,3.39],[80,3.40],[85,3.42],[90,3.45],[95,3.50],[100,3.55]];

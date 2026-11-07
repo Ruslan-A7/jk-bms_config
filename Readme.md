@@ -1,4 +1,4 @@
-# JK BMS Config · v0.1.0
+# JK BMS Config · v0.1.1
 
 Статичний двомовний конфігуратор батареї **EVE MB31 LiFePO₄ 314 Ah**, **JK-B2A8S-30P** та **AXIOMA ISMPPT-BF-DOU-GW-4200**.
 
@@ -7,7 +7,7 @@
 Потрібен Python 3. З кореня репозиторію:
 
 ```powershell
-./Start-Local.ps1
+.\Start-Local.cmd
 ```
 
 Або без PowerShell-сценарію:
@@ -16,7 +16,7 @@
 python -m http.server 8080 --bind 127.0.0.1 --directory site
 ```
 
-Відкрийте **http://localhost:8080**. Зупинка — `Ctrl+C`. Для іншого порту: `./Start-Local.ps1 -Port 8081`. Не відкривайте `index.html` через `file://`: JavaScript modules та PWA потребують HTTP(S). Локальний сервер доступний лише на цьому комп’ютері. Тести та build для запуску не потрібні; зовнішніх залежностей сайту немає.
+Відкрийте **http://localhost:8080**. Зупинка — `Ctrl+C`. Можна також двічі клацнути `Start-Local.cmd` у Провіднику. Цей запуск не потребує зміни PowerShell Execution Policy. Якщо `.ps1` заблоковано системою, використовуйте `.cmd` або пряму команду Python вище. Для іншого порту замініть `8080` у прямій команді Python. Не відкривайте `index.html` через `file://`: JavaScript modules та PWA потребують HTTP(S). Локальний сервер доступний лише на цьому комп’ютері. Тести та build для запуску не потрібні; зовнішніх залежностей сайту немає.
 
 ## Можливості
 
