@@ -1,5 +1,5 @@
-// v0.1.1. Engineering starting points, deliberately separate from cell ratings.
-export const VERSION = '0.1.1';
+// v0.1.2. Engineering starting points, deliberately separate from cell ratings.
+export const VERSION = '0.1.2';
 export const CELL = Object.freeze({ capacity: 314, nominal: 3.2 });
 // These are operating profiles, NOT an OCV/SOC curve or a manufacturer SOC table.
 const upperProfiles = [[60,3.36],[65,3.37],[70,3.38],[75,3.39],[80,3.40],[85,3.42],[90,3.45],[95,3.50],[100,3.55]];
@@ -9,5 +9,21 @@ export function calculate({ series, lower, upper }) {
   const high=upperProfiles.find(([n])=>n===upper)[1];
   const low=lowerProfiles.find(([n])=>n===lower)[1];
   const pack=(v,step=.1)=>Math.round(v*series/step)*step;
-  return { series,lower,upper, high,low, nominal:series*CELL.nominal, energy:series*CELL.nominal*CELL.capacity/1000*(upper-lower)/100, ah:CELL.capacity*(upper-lower)/100, bulk:pack(high),float:pack(Math.min(3.35,high-.03)),cutoff:pack(low),backGrid:Math.min(25.5,Math.max(22,pack(low+.03,.5))),backBattery:Math.min(29,Math.max(24,pack(high-.02,.5))), compatible:series===8 };
+  const clamp=(n,min,max)=>Math.min(max,Math.max(min,n));
+  const cutoffRequested=pack(low);
+  const gridRequested=pack(low+.03,.5);
+  // BMS remains a backup: its thresholds sit outside the daily inverter window.
+  // These tighter guards are engineering choices within EVE operating limits,
+  // not a claim that cell voltage measures or enforces the chosen SOC.
+  const bmsOvp=Math.min(3.6,high+.05);
+  const bmsRcv=high-.02;
+  const bmsUvp=Math.max(2.85,low-.15);
+  const bmsUvpr=low+.02;
+  return { series,lower,upper, high,low,bmsOvp,bmsRcv,bmsUvp,bmsUvpr,
+    nominal:series*CELL.nominal,energy:series*CELL.nominal*CELL.capacity/1000*(upper-lower)/100,
+    ah:CELL.capacity*(upper-lower)/100,bulk:pack(high),float:pack(Math.min(3.35,high-.03)),
+    cutoff:clamp(cutoffRequested,21,25),cutoffRequested,
+    backGrid:clamp(gridRequested,22,25.5),gridRequested,
+    backBattery:clamp(pack(high-.02,.5),24,29),compatible:series===8,
+    cutoffLimited:cutoffRequested>25,gridLimited:gridRequested>25.5 };
 }
